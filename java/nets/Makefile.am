@@ -22,4 +22,4 @@ NET_FILES = AutoInsurance.cfg AutoInsurance.net \
 
 install-data-local:
 	$(mkinstalldirs) $(DESTDIR)$(javanetsdir)
-	chmod 777 $(DESTDIR)$(javanetsdir)
+	chmod 755 $(DESTDIR)$(javanetsdir)

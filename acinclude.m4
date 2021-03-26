@@ -18,7 +18,7 @@ AC_DEFUN([DX_INSTALL_PATH],
 AC_CACHE_CHECK([for dx install path], ac_cv_dx_install_path,
 [
 AC_MSG_RESULT(locating)
-DX_DEFAULT_INST=/usr/local/dx
+DX_DEFAULT_INST=/opt/dx
 AC_CHECK_PROGS( DX, dx )
 
 DXINST=""
@@ -55,7 +55,12 @@ AC_DEFUN([DX_GET_ARCH],
 [
   AC_MSG_CHECKING(for platform architecture via dx -whicharch)
 AC_CHECK_PROGS( DX, dx )
-  DXARCH=`$DX -whicharch`
+  if test -e $DX ; then
+    DXARCH=`$DX -whicharch`
+  else
+    chmod 755 $RPM_BUILD_DIR/dx-$VERSION/bin/dxworker
+    DXARCH=`$RPM_BUILD_DIR/dx-$VERSION/bin/dxworker -whicharch`
+  fi    
   AC_MSG_RESULT(found $DXARCH)
 ])
 
@@ -167,8 +172,8 @@ DX_JAVA_CLASSPATH=""
 if test -r "$DXINST/lib_$DXARCH/arch.mak" ; then
   DX_JAVA_CLASSPATH=`grep DX_JAVA_CLASSPATH $DXINST/lib_$DXARCH/arch.mak | sed -e "s/DX_JAVA_CLASSPATH =//" -e "s/ //"`
 fi
-if test -r "$DXINST/java/htmlpages/dx.jar" ; then
-  DX_JAR="$DXINST/java/htmlpages/dx.jar"
+if test -r "$RPM_BUILD_DIR/dx-$VERSION/src/uipp/java/dx.jar" ; then
+  DX_JAR="$RPM_BUILD_DIR/dx-$VERSION/src/uipp/java/dx.jar"
   AC_MSG_RESULT([$DX_JAR])
   ifelse([$1], , , [$1])
 else
